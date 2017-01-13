@@ -1,0 +1,24 @@
+{
+  "name": "todo-app",
+  "version": "1.0.0",
+  "description": "backend for todo-app",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "todo-app"
+  ],
+  "author": "Valtteri Poutanen",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt-nodejs": "0.0.3",
+    "body-parser": "^1.15.2",
+    "express": "^4.14.0",
+    "html-escape": "^2.0.0",
+    "jsonwebtoken": "^7.1.9",
+    "mongodb": "^2.2.10",
+    "mongoose": "^4.6.2",
+    "nodejs": "0.0.0"
+  }
+}

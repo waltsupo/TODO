@@ -1,0 +1,152 @@
+<div class="row">
+    <!---   Center content  --->
+    <div class="col-xs-6 col-xs-offset-3">
+
+        <h4 data-ng-click="sortLists()">Lists
+            <button type="button" class="btn btn-default" style="float:right;"
+                    data-ng-click="showModal('#listModal', null, null, false);$event.stopPropagation();">Add list</button></h4>
+
+        <!---   If user has no lists    --->
+        <h1 data-ng-if="lists.length == 0">No lists found</h1><br>
+
+        <!---   Create panel for every list --->
+        <div data-ng-repeat="list in lists | orderBy:'name':listDesc">
+            <div class="panel panel-default">
+
+                <!---   List name and edit button   --->
+                <div class="panel-heading" data-ng-click="open(list._id)">
+                    {{list.name}}
+                    <span class="glyphicon glyphicon-pencil icon-arrow-right pull-right"
+                          data-ng-click="showModal('#listModal', list._id, null, true);$event.stopPropagation();"></span>
+                </div>
+
+                <!---   Todos, hidden until clicked    --->
+                <div data-ng-if="collapsed(list._id)" class="panel-body">
+                    <div class="row">
+
+                        <div class="col-xs-10 col-xs-offset-1">
+
+                            <!---   Headings    --->
+                            <div class="row">
+                                <div class="col-xs-2 text-center" data-ng-click="sort('done')">Done</div>
+                                <div class="col-xs-6" data-ng-click="sort('todo')">Todo</div>
+                                <div class="col-xs-2 text-center" data-ng-click="sort('priority')">Priority</div>
+                            </div><br>
+
+                            <!---   Todos   --->
+                            <div data-ng-repeat="todo in list.todos | orderBy:sortParam:desc">
+                                <div class="row">
+
+                                    <!---   Checkbox    --->
+                                    <div class="col-xs-2 text-center" style="font-size:1.3em;">
+
+                                        <div data-ng-hide="todo.done" data-ng-click="done(list._id, todo._id)">
+                                            <span class="glyphicon glyphicon-unchecked"></span></div>
+
+                                        <div data-ng-show="todo.done" data-ng-click="done(list._id, todo._id)">
+                                            <span class="glyphicon glyphicon-check"></span></div>
+                                    </div>
+
+                                    <!---   Other values    --->
+                                    <div class="col-xs-6">{{todo.todo}}</div>
+                                    <div class="col-xs-2 text-center">{{todo.priority}}</div>
+
+                                    <!---   Edit button for todos   --->
+                                    <div class="col-xs-1 col-xs-offset-1 text-right">
+                                        <div><span class="glyphicon glyphicon-pencil" data-ng-click="showModal('#todoModal', list._id, todo._id, true)"></span></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!---   Button for adding new todos   --->
+                            <button type="button" class="btn btn-default" style="float:right;" data-ng-click="showModal('#todoModal', list._id, null, false)">Add todo</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!---   Modals    --->
+<!---   Lists    --->
+<div id="listModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <!---   Header  --->
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 data-ng-show="editOn" class="modal-title">Edit list</h4>
+                <h4 data-ng-hide="editOn" class="modal-title">Add list</h4>
+            </div>
+
+            <!---   Content   --->
+            <div class="modal-body">
+
+                <form data-ng-submit="editList()">
+
+                    <!---   List name field   --->
+                    <div class="form-group">
+                        <label for="listNameM">List name:</label>
+                        <input type="text" class="form-control" data-ng-model="listNameM" id="listNameM"
+                               placeholder="List name" required>
+                    </div>
+
+                    <!---   Submit button   --->
+                    <button data-ng-show="editOn" type="submit" class="btn btn-default">Edit list</button>
+                    <button data-ng-hide="editOn" type="submit" class="btn btn-default">Create new list</button>
+                </form>
+            </div>
+            <!---   Footer  --->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" data-ng-show="editOn" class="btn btn-default" style="float:left;" data-ng-click="removeList()"
+                        data-dismiss="modal">Remove list</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!---   Todos   --->
+<div id="todoModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <!---   Header    --->
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 data-ng-show="editOn" class="modal-title">Edit todo</h4>
+                <h4 data-ng-hide="editOn" class="modal-title">Add todo</h4>
+            </div>
+
+            <!---   Content   --->
+            <div class="modal-body">
+                <form data-ng-submit="editTodo()">
+
+                    <!---   To do field  --->
+                    <div class="form-group">
+                        <label for="todo">Todo:</label>
+                        <input type="text" class="form-control" data-ng-model="todo" id="todo"
+                               placeholder="todo">
+                    </div>
+
+                    <!---   Priority field  --->
+                    <div class="form-group">
+                        <label for="priority">Priority: (1-10)</label>
+                        <input type="text" class="form-control" data-ng-model="priority" id="priority"
+                               placeholder="Priority">
+                    </div>
+
+                    <!---   Submit button   --->
+                    <button data-ng-show="editOn" type="submit" class="btn btn-default">Edit todo</button>
+                    <button data-ng-hide="editOn" type="submit" class="btn btn-default">Create new todo</button>
+                </form>
+            </div>
+            <!---   Footer  --->
+            <div class="modal-footer">
+
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" data-ng-show="editOn" class="btn btn-default" style="float:left;" data-ng-click="removeTodo()"
+                        data-dismiss="modal">Remove todo</button>
+            </div>
+        </div>
+    </div>
+</div>
